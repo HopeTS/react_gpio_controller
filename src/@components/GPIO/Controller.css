@@ -1,4 +1,9 @@
 .GPIOController {
   margin: 24px;
   padding: 24px;
-  display: inline-flex; }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+  .GPIOController h3 {
+    text-decoration: underline;
+    margin: 6px; }

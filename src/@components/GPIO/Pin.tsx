@@ -1,9 +1,11 @@
-import { PinLabel } from "types";
+import { useState, useEffect } from "react";
+import * as Types from "types";
 import "./Pin.css";
 
-interface GPIOPinProps extends PinLabel {
+interface GPIOPinProps extends Types.PinLabel {
   selectedPin: number;
   setSelectedPin: (oldState: number) => void;
+  pinData: Types.PinData;
 }
 
 /** A GPIO Pin */
@@ -14,8 +16,42 @@ const Pin = ({
   color,
   selectedPin,
   setSelectedPin,
+  pinData,
 }: GPIOPinProps) => {
   const side = number % 2 === 0 ? "right" : "left";
+
+  const [innerColor, setInnerColor] = useState("transparent");
+
+  useEffect(() => {
+    // Decide default color (based on type)
+    let pinColor = "transparent";
+    switch (type) {
+      case "Ground":
+        break;
+
+      case "Power":
+        pinColor = "green";
+        break;
+
+      default:
+        pinColor = "red";
+        break;
+    }
+
+    // Pin color (based on power)
+    if (!!pinData[number]) {
+      if (pinData[number].state === "HIGH") {
+        pinColor = "green";
+      }
+    }
+
+    // Pin color (based on user focus)
+    if (number === selectedPin) {
+      pinColor = "lightblue";
+    }
+
+    setInnerColor(pinColor);
+  }, [selectedPin, pinData]);
 
   const updateSelectedPin = () => {
     // Click to select, click again to unselect
@@ -42,7 +78,7 @@ const Pin = ({
         <div className="GPIOPin__pin">
           <div style={{ backgroundColor: color }}>
             <div className="GPIOPin__pinInner">
-              <div></div>
+              <div style={{ backgroundColor: innerColor }}></div>
             </div>
           </div>
         </div>
