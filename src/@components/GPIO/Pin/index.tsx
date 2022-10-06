@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+
+import * as utils from "@utils";
 import * as Types from "types";
-import "./Pin.css";
+import "./index.css";
 
 interface GPIOPinProps extends Types.PinLabel {
   selectedPin: number;

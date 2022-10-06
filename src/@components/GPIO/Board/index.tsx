@@ -1,5 +1,5 @@
-import "./Board.css";
-import Pin from "./Pin";
+import "./index.css";
+import Pin from "../Pin";
 import GPIO_PINS from "@data/GPIO_PINS";
 import * as Types from "types";
 

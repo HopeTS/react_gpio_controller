@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import * as Types from "types";
-import "./Form.css";
+import "./index.css";
 import GPIO_PINS from "@data/GPIO_PINS";
 import * as api from "@api";
 
@@ -15,6 +15,7 @@ const Form = ({
   setPiIP,
   piPort,
   setPiPort,
+  attemptConnection,
 }: {
   pinData: Types.PinData;
   setPinData: (oldState: Types.PinData) => void;
@@ -24,56 +25,8 @@ const Form = ({
   setPiIP: (oldState: string) => void;
   piPort: number;
   setPiPort: (oldState: number) => void;
+  attemptConnection: () => Promise<void>;
 }) => {
-  const [formData, setFormData] = useState({});
-  const [connectionEstablished, setConnectionEstablished] = useState(false);
-  const [shouldTestConnection, setShouldTestConnection] = useState(false);
-
-  // Whenever ip or port changes
-  useEffect(() => {
-    setShouldTestConnection(true);
-  }, [piIP, piPort]);
-
-  // Retest connection whenever appropriate
-  useEffect(() => {
-    const test = async () => {
-      const res = await api.ping({ ip: piIP, port: piPort });
-      setConnectionEstablished(res);
-    };
-
-    if (shouldTestConnection) {
-      test();
-      setShouldTestConnection(false);
-    }
-  }, [shouldTestConnection]);
-
-  /** Test connection to pi */
-  const testConnection = async () => {
-    console.log("Testing connection");
-    const didConnect = await api.ping({ ip: piIP, port: piPort });
-    setConnectionEstablished(didConnect);
-    setShouldTestConnection(didConnect);
-  };
-
-  const getPinInfo = async () => {
-    console.log("Getting pin info");
-    const pinInfo = await api.get_pin_info({ ip: piIP, port: piPort });
-    console.log("pin info", pinInfo);
-  };
-
-  const blink = async () => {
-    console.log("Blinking");
-    const blink = await api.blink({ ip: piIP, port: piPort });
-  };
-
-  const togglePin = async () => {
-    await api.toggle_pin({ ip: piIP, port: piPort }, selectedPin);
-  };
-
-  const attemptConnection = async () => {
-    setShouldTestConnection(true);
-  };
-
   return (
     <div className="GPIOForm">
       {/* Header */}
@@ -92,7 +45,7 @@ const Form = ({
             {GPIO_PINS[selectedPin].type !== "Power" &&
             GPIO_PINS[selectedPin].type !== "Ground" ? (
               <>
-                <button onClick={(e) => togglePin()}>Toggle pin</button>
+                <button onClick={(e) => console.log("No")}>Toggle pin</button>
               </>
             ) : (
               <></>
@@ -105,7 +58,7 @@ const Form = ({
 
       {/* Raspberry pi connection settings */}
       <div className="GPIOForm__section">
-        <h3>{connectionEstablished ? "🟢" : "🔴"}Pi Connection</h3>
+        <h3>{true ? "🟢" : "🔴"}Pi Connection</h3>
         <div className="GPIOForm__row">
           <label>IP address:</label>
           <input
@@ -126,14 +79,6 @@ const Form = ({
 
         <div className="GPIOForm__row" style={{ position: "relative" }}>
           <button onClick={(e) => attemptConnection()}>Connect</button>
-        </div>
-
-        <div className="GPIOForm__row">
-          <button onClick={(e) => getPinInfo()}>Get info</button>
-        </div>
-
-        <div className="GPIOForm__row">
-          <button onClick={(e) => blink()}>Blink</button>
         </div>
 
         <div className="GPIOForm__row">
