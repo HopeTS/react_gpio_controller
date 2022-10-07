@@ -8,37 +8,45 @@
   cursor: pointer;
   user-select: none;
   background-color: rgba(255, 0, 0, 0.05); }
-  .GPIOPin[data-side=right] {
-    flex-direction: row-reverse; }
-    .GPIOPin[data-side=right] .GPIOPin__label {
-      flex-direction: row-reverse; }
-  .GPIOPin:first-child .GPIOPin__label {
-    border-top: 1px solid lightgray; }
-  .GPIOPin:nth-child(2) .GPIOPin__label {
-    border-top: 1px solid lightgray; }
-  .GPIOPin[data-selected=true] {
-    background-color: lightblue; }
-    .GPIOPin[data-selected=true] .GPIOPin__pinInner > div {
-      background-color: lightblue; }
+
+.GPIOPin[data-side=right] {
+  flex-direction: row-reverse; }
+
+.GPIOPin[data-side=right] .GPIOPin__label {
+  flex-direction: row-reverse; }
+
+.GPIOPin:first-child .GPIOPin__label {
+  border-top: 1px solid lightgray; }
+
+.GPIOPin:nth-child(2) .GPIOPin__label {
+  border-top: 1px solid lightgray; }
+
+.GPIOPin[data-connected=false] {
+  background-color: none; }
+
+.GPIOPin[data-selected=true] {
+  background-color: lightgray; }
 
 .GPIOPin__label {
   width: 160px;
   display: flex;
   justify-content: flex-end;
   border-bottom: 1px solid lightgray; }
-  .GPIOPin__label h3 {
-    margin: 0;
-    padding: 0;
-    font-size: 16px;
-    font-weight: light;
-    margin: 12px 0;
-    padding: 0;
-    width: max-content; }
-  .GPIOPin__label p {
-    font-size: 18px;
-    padding: 0;
-    margin: 11px;
-    display: inline-flex; }
+
+.GPIOPin__label h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: light;
+  margin: 12px 0;
+  padding: 0;
+  width: max-content; }
+
+.GPIOPin__label p {
+  font-size: 18px;
+  padding: 0;
+  margin: 11px;
+  display: inline-flex; }
 
 .GPIOPin__boardPiece {
   width: 40px;
@@ -47,19 +55,22 @@
 
 .GPIOPin__pin {
   width: 100%;
-  height: 100%; }
-  .GPIOPin__pin > div {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin: calc(50% - 11px);
-    border: 1px solid white; }
+  height: 100%;
+  opacity: 0.6; }
+
+.GPIOPin__pin > div {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: calc(50% - 11px); }
+
+.GPIOPin__pin[data-selected=true] {
+  opacity: 1; }
 
 .GPIOPin__pinInner div {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   position: relative;
-  left: 5px;
-  top: 5px;
-  background-color: darkblue; }
+  left: 4px;
+  top: 4px; }

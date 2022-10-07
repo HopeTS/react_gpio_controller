@@ -1,32 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
 
 import * as Types from "types";
 import "./index.css";
 import GPIO_PINS from "@data/GPIO_PINS";
 import * as api from "@api";
+import { SocketContext } from "@socket";
 
 /** Form with options to update selected pin */
 const Form = ({
-  pinData,
-  setPinData,
   selectedPin,
   setSelectedPin,
-  piIP,
-  setPiIP,
-  piPort,
-  setPiPort,
-  attemptConnection,
 }: {
-  pinData: Types.PinData;
-  setPinData: (oldState: Types.PinData) => void;
   selectedPin: number;
   setSelectedPin: (oldState: number) => void;
-  piIP: string;
-  setPiIP: (oldState: string) => void;
-  piPort: number;
-  setPiPort: (oldState: number) => void;
-  attemptConnection: () => Promise<void>;
 }) => {
+  const [ip, setIp] = useState(process.env.DEFAULT_PI_IP || "127.0.0.1");
+  const [port, setPort] = useState(5000);
+
+  const socket = useContext(SocketContext);
+
+  const attemptConnection = () => {
+    console.log("Attempting to connect a context ws");
+
+    socket.connect({ ip, port });
+  };
+
+  const togglePin = () => {
+    socket.togglePin(selectedPin);
+  };
+
   return (
     <div className="GPIOForm">
       {/* Header */}
@@ -43,9 +45,10 @@ const Form = ({
             </p>
 
             {GPIO_PINS[selectedPin].type !== "Power" &&
-            GPIO_PINS[selectedPin].type !== "Ground" ? (
+            GPIO_PINS[selectedPin].type !== "Ground" &&
+            socket.connected ? (
               <>
-                <button onClick={(e) => console.log("No")}>Toggle pin</button>
+                <button onClick={(e) => togglePin()}>Toggle pin</button>
               </>
             ) : (
               <></>
@@ -58,13 +61,13 @@ const Form = ({
 
       {/* Raspberry pi connection settings */}
       <div className="GPIOForm__section">
-        <h3>{true ? "🟢" : "🔴"}Pi Connection</h3>
+        <h3>{socket.connected ? "🟢" : "🔴"}Pi Connection</h3>
         <div className="GPIOForm__row">
           <label>IP address:</label>
           <input
             type="text"
-            value={piIP}
-            onChange={(e) => setPiIP(e.target.value)}
+            value={ip}
+            onChange={(e) => setIp(e.target.value)}
           />
         </div>
 
@@ -72,21 +75,14 @@ const Form = ({
           <label>Port</label>
           <input
             type="number"
-            value={piPort}
-            onChange={(e) => setPiPort(Number(e.target.value))}
+            value={port}
+            onChange={(e) => setPort(Number(e.target.value))}
           />
         </div>
 
         <div className="GPIOForm__row" style={{ position: "relative" }}>
           <button onClick={(e) => attemptConnection()}>Connect</button>
-        </div>
-
-        <div className="GPIOForm__row">
-          <button
-            onClick={(e) => api.test_websocket({ ip: piIP, port: piPort })}
-          >
-            Test websocket
-          </button>
+          <button onClick={(e) => socket.disconnect()}>Disconnect</button>
         </div>
       </div>
     </div>

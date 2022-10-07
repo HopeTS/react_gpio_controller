@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import * as utils from "@utils";
 import * as Types from "types";
 import "./index.css";
+import { SocketContext } from "@socket";
 
 interface GPIOPinProps extends Types.PinLabel {
   selectedPin: number;
   setSelectedPin: (oldState: number) => void;
-  pinData: Types.PinData;
 }
 
 /** A GPIO Pin */
@@ -18,42 +18,40 @@ const Pin = ({
   color,
   selectedPin,
   setSelectedPin,
-  pinData,
 }: GPIOPinProps) => {
   const side = number % 2 === 0 ? "right" : "left";
 
+  const socket = useContext(SocketContext);
+
   const [innerColor, setInnerColor] = useState("transparent");
 
+  // Determine
   useEffect(() => {
     // Decide default color (based on type)
     let pinColor = "transparent";
+
     switch (type) {
       case "Ground":
         break;
 
       case "Power":
-        pinColor = "green";
+        if (selectedPin === number) {
+          pinColor = "lightblue";
+        } else if (socket.connected) {
+          pinColor = "lightgreen";
+        }
         break;
 
       default:
-        pinColor = "red";
         break;
     }
 
-    // Pin color (based on power)
-    if (!!pinData[number]) {
-      if (pinData[number].state === "HIGH") {
-        pinColor = "green";
-      }
-    }
-
-    // Pin color (based on user focus)
-    if (number === selectedPin) {
-      pinColor = "lightblue";
+    if (selectedPin === number) {
+      pinColor = "white";
     }
 
     setInnerColor(pinColor);
-  }, [selectedPin, pinData]);
+  }, [selectedPin, socket.board, socket.connected]);
 
   const updateSelectedPin = () => {
     // Click to select, click again to unselect
@@ -69,6 +67,7 @@ const Pin = ({
       className="GPIOPin"
       data-side={side}
       data-selected={selectedPin === number}
+      data-connected={socket.connected}
       onClick={() => updateSelectedPin()}
     >
       <div className="GPIOPin__label">
@@ -77,7 +76,7 @@ const Pin = ({
       </div>
 
       <div className="GPIOPin__boardPiece" data-active={true}>
-        <div className="GPIOPin__pin">
+        <div className="GPIOPin__pin" data-selected={selectedPin === number}>
           <div style={{ backgroundColor: color }}>
             <div className="GPIOPin__pinInner">
               <div style={{ backgroundColor: innerColor }}></div>

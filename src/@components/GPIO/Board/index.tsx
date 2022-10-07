@@ -1,20 +1,22 @@
+import { useEffect, useContext } from "react";
+
 import "./index.css";
 import Pin from "../Pin";
 import GPIO_PINS from "@data/GPIO_PINS";
 import * as Types from "types";
+import { SocketContext } from "@socket";
 
 /** GPIO Board (holds all the pins) */
 const Board = ({
-  pinData,
-  setPinData,
   selectedPin,
   setSelectedPin,
 }: {
-  pinData: Types.PinData;
-  setPinData: (oldState: Types.PinData) => void;
   selectedPin: number;
   setSelectedPin: (oldState: number) => void;
 }) => {
+  // Load context
+  const socket = useContext(SocketContext);
+
   return (
     <div className="GPIOBoard">
       <div className="GPIOBoard__board">
@@ -23,7 +25,6 @@ const Board = ({
             {...GPIO_PINS[Number(pin_number)]}
             selectedPin={selectedPin}
             setSelectedPin={setSelectedPin}
-            pinData={pinData}
           />
         ))}
       </div>

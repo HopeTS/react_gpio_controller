@@ -31,12 +31,13 @@
         }
     }
 
-    &[data-selected=true] {
-        background-color: lightblue;
+    &[data-connected=false] {
+        background-color: none;
+    }
 
-        .GPIOPin__pinInner > div {
-            background-color: lightblue;
-        }
+    &[data-selected=true] {
+        background-color: lightgray;
+
     }
 
 
@@ -79,24 +80,29 @@
 .GPIOPin__pin {
     width: 100%;
     height: 100%;
+    opacity: 0.6;
 
     > div {
         width: 20px;
         height: 20px;
         border-radius: 50%;
         margin: calc(50% - 11px);
-        border: 1px solid white;
     }
+
+    &[data-selected=true] {
+        opacity: 1;
+    }
+
+
 }
 
 .GPIOPin__pinInner {
     div {
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         position: relative;
-        left: 5px;
-        top: 5px;
-        background-color: darkblue;
+        left: 4px;
+        top: 4px;
     }
 }

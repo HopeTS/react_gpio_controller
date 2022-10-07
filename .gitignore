@@ -24,3 +24,6 @@ yarn-error.log*
 
 # Ignore VSCode settings
 .vscode
+
+# Ignore built css
+src/@components/*.css
